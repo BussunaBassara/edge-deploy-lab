@@ -27,7 +27,9 @@ fi
 
 # Set the secret on Supabase before deploying
 echo "🔑 Setting secrets..."
-supabase secrets set WEBHOOK_SECRET="$WEBHOOK_SECRET" \
+supabase secrets set \
+  WEBHOOK_SECRET="$WEBHOOK_SECRET" \
+  SENTRY_DSN="$SENTRY_DSN" \
   --project-ref "$SUPABASE_PROJECT_ID"
 
 # Deploy the function
