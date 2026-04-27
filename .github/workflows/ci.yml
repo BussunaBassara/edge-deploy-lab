@@ -37,17 +37,23 @@ jobs:
       - run: npm install
       - run: npm test
 
-  deploy:
+
+deploy:
     name: Deploy to Supabase
     runs-on: ubuntu-latest
     needs: test
     if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v4
-      - name: Deploy Edge Function
+
+      - name: Install Supabase CLI
+        run: npm install -g supabase
+
+      - name: Run deployment script
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
           SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
+          WEBHOOK_SECRET: ${{ secrets.WEBHOOK_SECRET }}
         run: |
-          npm install -g supabase
-          supabase functions deploy webhook-receiver --project-ref $SUPABASE_PROJECT_ID
+          chmod +x scripts/deploy.sh
+          ./scripts/deploy.sh production
