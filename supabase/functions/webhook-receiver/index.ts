@@ -1,5 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.0";
 
 const SENTRY_DSN = Deno.env.get("SENTRY_DSN");
 const WEBHOOK_SECRET = Deno.env.get("WEBHOOK_SECRET");
