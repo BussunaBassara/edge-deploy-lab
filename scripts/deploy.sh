@@ -30,8 +30,8 @@ echo "🔑 Setting secrets..."
 supabase secrets set \
   WEBHOOK_SECRET="$WEBHOOK_SECRET" \
   SENTRY_DSN="$SENTRY_DSN" \
+  SUPABASE_SERVICE_ROLE_KEY="$SUPABASE_SERVICE_ROLE_KEY" \
   --project-ref "$SUPABASE_PROJECT_ID"
-
 # Deploy the function
 echo "📦 Deploying function..."
 supabase functions deploy $FUNCTION_NAME \
