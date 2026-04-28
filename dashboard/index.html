@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Webhook Health Dashboard</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, sans-serif; background: #0f1117; color: #e2e8f0; padding: 24px; }
+    h1 { font-size: 24px; margin-bottom: 4px; }
+    .subtitle { color: #64748b; font-size: 14px; margin-bottom: 32px; }
+    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 32px; }
+    .stat-card { background: #1e2130; border-radius: 12px; padding: 20px; border: 1px solid #2d3148; }
+    .stat-label { font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 1px; }
+    .stat-value { font-size: 36px; font-weight: 700; margin-top: 8px; }
+    .green { color: #22c55e; }
+    .red { color: #ef4444; }
+    .blue { color: #3b82f6; }
+    table { width: 100%; border-collapse: collapse; background: #1e2130; border-radius: 12px; overflow: hidden; }
+    th { background: #2d3148; padding: 12px 16px; text-align: left; font-size: 12px; text-transform: uppercase; color: #64748b; }
+    td { padding: 12px 16px; border-bottom: 1px solid #2d3148; font-size: 14px; }
+    tr:last-child td { border-bottom: none; }
+    .badge { padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+    .badge-success { background: #14532d; color: #22c55e; }
+    .badge-failure { background: #450a0a; color: #ef4444; }
+    .refresh { font-size: 12px; color: #64748b; margin-bottom: 16px; }
+    .dot { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; display: inline-block; margin-right: 6px; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+  </style>
+</head>
+<body>
+
+  <h1>🔔 Webhook Health Dashboard</h1>
+  <p class="subtitle">edge-deploy-lab · <span class="dot"></span>Live — refreshes every 10 seconds</p>
+
+  <div class="stats">
+    <div class="stat-card">
+      <div class="stat-label">Total Webhooks</div>
+      <div class="stat-value blue" id="total">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Successful</div>
+      <div class="stat-value green" id="success">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Failed</div>
+      <div class="stat-value red" id="failed">—</div>
+    </div>
+  </div>
+
+  <p class="refresh" id="last-refresh">Loading...</p>
+  <table>
+    <thead>
+      <tr>
+        <th>Time</th>
+        <th>Event</th>
+        <th>Status</th>
+        <th>Error</th>
+      </tr>
+    </thead>
+    <tbody id="logs-body">
+      <tr><td colspan="4" style="text-align:center;color:#64748b;">Loading...</td></tr>
+    </tbody>
+  </table>
+
+  <script>
+    // ⚠️ REPLACE THESE WITH YOUR VALUES
+    const SUPABASE_URL = "https://ljpkygjdsheyjfolhiru.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxqcGt5Z2pkc2hleWpmb2xoaXJ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcyMzI3MTIsImV4cCI6MjA5MjgwODcxMn0.5sSlG9EKnx6GGbPVMKiNxsjgeWnuSr8LuP9L1Epxqfk";
+
+    async function fetchLogs() {
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/webhook_logs?order=created_at.desc&limit=20`,
+        {
+          headers: {
+            "apikey": SUPABASE_ANON_KEY,
+            "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
+          }
+        }
+      );
+      return await res.json();
+    }
+
+    function formatTime(ts) {
+      return new Date(ts).toLocaleTimeString("en-KE", {
+        hour: "2-digit", minute: "2-digit", second: "2-digit"
+      });
+    }
+
+    async function render() {
+      const logs = await fetchLogs();
+      const total = logs.length;
+      const success = logs.filter(l => l.status === "success").length;
+      const failed = logs.filter(l => l.status === "failure").length;
+
+      document.getElementById("total").textContent = total;
+      document.getElementById("success").textContent = success;
+      document.getElementById("failed").textContent = failed;
+      document.getElementById("last-refresh").textContent =
+        `Last refreshed: ${new Date().toLocaleTimeString()}`;
+
+      const tbody = document.getElementById("logs-body");
+      tbody.innerHTML = logs.map(log => `
+        <tr>
+          <td>${formatTime(log.created_at)}</td>
+          <td>${log.event_name || "<em style='color:#64748b'>none</em>"}</td>
+          <td><span class="badge badge-${log.status}">${log.status}</span></td>
+          <td style="color:#64748b">${log.error_message || "—"}</td>
+        </tr>
+      `).join("");
+    }
+
+    render();
+    setInterval(render, 10000); // refresh every 10 seconds
+  </script>
+</body>
+</html>
