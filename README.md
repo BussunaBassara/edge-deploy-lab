@@ -6,7 +6,7 @@ maintaining a serverless function — from CI/CD to incident response.
 
 ---
 
-## 🏗️ What This Project Does
+##  What This Project Does
 
 Receives webhooks (incoming HTTP requests), validates them, logs every
 delivery to a database, tracks errors in real-time, and provides a live
@@ -15,7 +15,7 @@ separate staging environment.
 
 ---
 
-## 🗂️ Project Structure
+##  Project Structure
 ```
 edge-deploy-lab/
 ├── .github/workflows/ci.yml          # Automated CI/CD pipeline
@@ -35,7 +35,7 @@ edge-deploy-lab/
 ```
 ---
 
-## 📦 Modules
+##  Modules
 
 | Module | What Was Built | File |
 |--------|---------------|------|
@@ -48,7 +48,7 @@ edge-deploy-lab/
 
 ---
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 | Tool | Purpose |
 |------|---------|
@@ -60,7 +60,7 @@ edge-deploy-lab/
 
 ---
 
-## ⚡ Quick Start
+##  Quick Start
 
 1. Clone the repo
 2. Set up required secrets in GitHub (see [Module 2](docs/module-2-edge-functions.md))
@@ -69,7 +69,7 @@ edge-deploy-lab/
 
 ---
 
-## 📖 Runbooks
+##  Runbooks
 
 - [Deployment Runbook](docs/deployment-runbook.md) — how to deploy safely
 - [Incident Response Runbook](docs/incident-response-runbook.md) — what to do when things break
