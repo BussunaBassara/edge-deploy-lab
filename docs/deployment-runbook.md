@@ -11,7 +11,22 @@ to staging and production environments.
 **Owner:** [Your Name]
 
 ---
+## Environments
 
+| Environment | Branch | Supabase Project | Purpose |
+|-------------|--------|-----------------|---------|
+| Staging | `staging` | edge-deploy-lab-staging | Test changes safely |
+| Production | `main` | edge-deploy-lab | Live, real users |
+
+## Staging Workflow
+Always test in staging before merging to production:
+
+1. Push your changes to the `staging` branch
+2. Wait for staging deployment to complete
+3. Test thoroughly using Thunder Client against the staging URL
+4. Check staging `webhook_logs` table for correct data
+5. If all good → open a Pull Request from `staging` → `main`
+6. Merge to trigger production deployment
 ## Pre-Deployment Checklist
 Before every deployment, confirm:
 
