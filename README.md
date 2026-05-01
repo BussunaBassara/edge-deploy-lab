@@ -16,7 +16,7 @@ separate staging environment.
 ---
 
 ## 🗂️ Project Structure
-
+```
 edge-deploy-lab/
 ├── .github/workflows/ci.yml          # Automated CI/CD pipeline
 ├── supabase/functions/
@@ -32,7 +32,7 @@ edge-deploy-lab/
 ├── module-6-staging.md           # Module 6: Staging Environment
 ├── deployment-runbook.md         # How to deploy safely
 └── incident-response-runbook.md  # How to handle incidents
-
+```
 ---
 
 ## 📦 Modules
