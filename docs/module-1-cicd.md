@@ -249,3 +249,62 @@ It tells GitHub to provision a fresh Ubuntu Linux virtual machine for
 that job. The machine is clean, isolated, and destroyed after the job
 finishes. This ensures every run is reproducible and not affected by
 leftover state from previous runs.
+
+---
+
+## File: `package.json`
+
+### Why This File Exists
+The CI workflow runs these two commands:
+
+```yaml
+- run: npm run lint
+- run: npm test
+```
+
+npm needs to know what `lint` and `test` actually mean.
+That definition lives in `package.json`.
+
+### The File
+
+```json
+{
+  "name": "edge-deploy-lab",
+  "version": "1.0.0",
+  "scripts": {
+    "lint": "echo 'Linting passed ✅'",
+    "test": "echo 'Tests passed ✅'"
+  }
+}
+```
+
+### Line by Line
+
+**`"name"`** — the name of the project. Used by npm to identify it.
+
+**`"version"`** — the current version of the project. Follows the
+standard major.minor.patch format (1.0.0 = first stable release).
+
+**`"scripts"`** — a dictionary of shortcuts. When the CI runs
+`npm run lint`, npm looks up `"lint"` here and runs whatever command
+is assigned to it.
+
+| CI Command | What npm Actually Runs |
+|------------|----------------------|
+| `npm run lint` | `echo 'Linting passed ✅'` |
+| `npm test` | `echo 'Tests passed ✅'` |
+
+### Why We Used `echo` Instead of Real Tools
+In a real project these scripts would run actual tools:
+- `"lint": "eslint src/"` — checks code style across all files
+- `"test": "jest"` — runs a full test suite
+
+We used `echo` to keep the focus on the pipeline structure without
+spending time setting up linting and testing frameworks. The pipeline
+behaves identically either way — if the script exits without an error,
+the job passes.
+
+### The Relationship in One Sentence
+`package.json` defines what `lint` and `test` mean. The CI workflow
+calls them. Without `package.json`, the workflow would fail immediately
+with a "script not found" error.
